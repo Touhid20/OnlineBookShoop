@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineBookShoop.Data;
 using OnlineBookShoop.Models;
-
+using OnlineBook.DataAcces.Data;
 namespace OnlineBookShoop.Controllers
 {
     public class CategoryController : Controller
@@ -10,6 +9,7 @@ namespace OnlineBookShoop.Controllers
         public CategoryController(ApplicationDbContext db)
         {
             _db = db;
+            
         }
         public IActionResult Index()
         {
