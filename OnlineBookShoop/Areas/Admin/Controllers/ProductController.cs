@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineBookShoop.Models;
+
 using OnlineBook.DataAccess.Repository.IRepository;
 
 
@@ -8,10 +9,10 @@ using OnlineBook.DataAccess.Repository.IRepository;
 namespace OnlineBookShoop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class ProductContoroller : Controller
+    public class  ProductController:Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductContoroller(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 
@@ -33,7 +34,8 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Product obj)
         {
-         
+           
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Product.Add(obj);
@@ -54,8 +56,8 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
                 return NotFound();
             }
             Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-            //Product? productFromDb1 = _db.Products.FirstOrDefault(u=>u.Id==id);
-            //Product? productFromDb2 = _db.Products.Where(u=>u.Id==id).FirstOrDefault();
+            //Category? productFromDb1 = _db.Product.FirstOrDefault(u=>u.Id==id);
+            //Category? productFromDb2 = _db.Product.Where(u=>u.Id==id).FirstOrDefault();
             if (productFromDb == null)
             {
                 return NotFound();
@@ -88,8 +90,8 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
                 return NotFound();
             }
             Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-            //Product? productFromDb1 = _db.Products.FirstOrDefault(u=>u.Id==id);
-            //Product? productFromDb1 = _db.Products.Where(u=>u.Id==id).FirstOrDefault();
+            //Category? productFromDb1 = _db.Product.FirstOrDefault(u=>u.Id==id);
+            //Category? productFromDb2 = _db.Product.Where(u=>u.Id==id).FirstOrDefault();
             if (productFromDb == null)
             {
                 return NotFound();

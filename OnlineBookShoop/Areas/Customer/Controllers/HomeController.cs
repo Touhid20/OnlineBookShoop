@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using OnlineBookShoop.Models;
 
-namespace OnlineBookShoop.Areas.Customer.Controllers
+namespace OnlineBookShoop.Area.Customer.Controllers
 {
     [Area("Customer")]
     public class HomeController : Controller
