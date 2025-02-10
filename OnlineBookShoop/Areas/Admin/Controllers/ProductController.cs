@@ -2,6 +2,7 @@
 using OnlineBookShoop.Models;
 
 using OnlineBook.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 
@@ -20,6 +21,7 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> ProductList = _unitOfWork.Product.GetAll().ToList();
+           
             return View(ProductList);
         }
 
@@ -27,7 +29,13 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         // create
         public IActionResult Create()
         {
-
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.
+               GetAll().Select(u => new SelectListItem
+               {
+                   Text = u.Name,
+                   Value = u.Id.ToString()
+               });
+            ViewBag.CategoryList = CategoryList;
             return View();
         }
 
