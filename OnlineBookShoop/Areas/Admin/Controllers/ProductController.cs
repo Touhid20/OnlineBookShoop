@@ -11,7 +11,7 @@ using OnlineBook.Models.ViewModels;
 namespace OnlineBookShoop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class  ProductController:Controller
+    public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -23,8 +23,8 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> ProductList = _unitOfWork.Product.GetAll().ToList();
-           
+            List<Product> ProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+
             return View(ProductList);
         }
 
@@ -33,13 +33,14 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         public IActionResult Upsert(int? id)
         {
           
+
             ProductVM productVM = new()
             {
                 CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-               {
-                   Text = u.Name,
-                   Value = u.Id.ToString()
-               }),
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
                 Product = new Product()
             };
             if (id == null || id == 0)
@@ -50,17 +51,17 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
             else
             {
                 //Update
-                productVM.Product=_unitOfWork.Product.Get(u=>u.Id==id);
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
                 return View(productVM);
 
             }
-            
+
         }
 
         [HttpPost]
         public IActionResult Upsert(ProductVM ProductVM, IFormFile? file)
         {
-           
+
 
             if (ModelState.IsValid)
             {
@@ -80,7 +81,7 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
                         }
                     }
 
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName),FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
@@ -110,41 +111,46 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
                 return View(ProductVM);
 
             }
-            
+
 
         }
 
-        // For Delete
+        #region API CallS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> ProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = ProductList });
+        }
 
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+         
+            var productToBeDeleted = _unitOfWork.Product.Get(u => u.Id == id);
+            
+            if (productToBeDeleted == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleting" });
             }
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-            //Category? productFromDb1 = _db.Product.FirstOrDefault(u=>u.Id==id);
-            //Category? productFromDb2 = _db.Product.Where(u=>u.Id==id).FirstOrDefault();
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(productFromDb);
-        }
 
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int? id)
-        {
-            Product? obj = _unitOfWork.Product.Get(u => u.Id == id);
-            if (obj == null)
+            var oldImagePath =
+                           Path.Combine(_webHostEnvironment.WebRootPath,
+                           productToBeDeleted.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
             {
-                return NotFound();
+                System.IO.File.Delete(oldImagePath);
             }
-            _unitOfWork.Product.Remove(obj);
+
+            _unitOfWork.Product.Remove(productToBeDeleted);
             _unitOfWork.Save();
-            TempData["success"] = "Product Delete successfully";
-            return RedirectToAction("Index");
 
+            return Json(new { success = true, message = "Delete Successful" });
         }
+
+        #endregion
+
     }
 }
+
