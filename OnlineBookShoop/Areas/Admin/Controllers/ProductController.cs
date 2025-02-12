@@ -23,7 +23,7 @@ namespace OnlineBookShoop.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> ProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> ProductList = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
            
             return View(ProductList);
         }
