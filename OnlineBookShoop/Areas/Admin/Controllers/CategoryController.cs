@@ -2,11 +2,14 @@
 using OnlineBookShoop.Models;
 using OnlineBook.DataAcces.Data;
 using OnlineBook.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using OnlineBook.Utility;
 
 
 namespace OnlineBookShoop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_User_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -4,6 +4,8 @@ using OnlineBookShoop.Models;
 using OnlineBook.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using OnlineBook.Utility;
 
 
 
@@ -11,6 +13,7 @@ using OnlineBook.Models.ViewModels;
 namespace OnlineBookShoop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_User_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
